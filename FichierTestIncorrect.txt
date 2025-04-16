@@ -1,0 +1,10 @@
+const int c = 5;
+int a;
+a = 10;
+c = 20;          // erreur : constante modifiée
+int arr[5];
+arr[0] = 100;
+arr[5] = 200;    // erreur : dépassement de borne
+a = 3.5;         // erreur : incompatibilité de type
+int x = 0;
+int z = 10 / x;  // erreur : division par zéro
