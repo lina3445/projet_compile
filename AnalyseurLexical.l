@@ -18,6 +18,8 @@ int column = 1;
 Float           [-+]?[0-9]+\.[0-9]+
 idf             [a-zA-Z](_?[a-zA-Z0-9]){0,13}
 chiffre         [-+]?[0-9]+
+Chaine          [a-zA-Z_][a-zA-Z0-9_]*
+
 
 %x COMMENT_MULTILIGNE
 
@@ -63,7 +65,7 @@ chiffre         [-+]?[0-9]+
 "AND"           { return AND; }
 "OR"            { return OR; }
 "!"             { return NOT; }
-
+"'"             { return Gui; }
 "("             { return PAR_OUV; }
 ")"             { return PAR_FERM; }
 "["             { return CROCH_OUV; }
