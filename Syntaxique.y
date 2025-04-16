@@ -83,7 +83,7 @@ declaration:
     {
         printf("Tableau '%s' de taille %d de type %s (ligne %d).\n", $2, $7, $5, @2.first_line);
     }
-    | LET liste_idf DEUX_POINTS CROCH_OUV type CROCH_FERM CHIFFRE PVIRG
+    | LET liste_idf DEUX_POINTS CROCH_OUV type PVIRG CHIFFRE CROCH_FERM PVIRG
 {
     printf("Tableaux de type %s, taille %d (ligne %d).\n", $5, $7, @1.first_line);
 }
