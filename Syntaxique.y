@@ -19,13 +19,15 @@ int nb_ligne = 1;
 %token <sval> IDF
 %token <ival> CHIFFRE
 %token <fval> FLOAT
+%token <sval> CHAINE
+
 
 %token MAIN_PRGM L3_SOFTWARE VAR BEGIN_PG END_PG LET CONST
 %token IF THEN ELSE FOR FROM TO WHILE STEP INPUT OUTPUT
 %token PLUS MOINS MULT DIV AFFECT MODULO
 %token INF SUP INFEG SUPEG EGAL EGALE DIFF
 %token AND OR NOT
-%token PAR_OUV PAR_FERM PVIRG VIRG
+%token PAR_OUV PAR_FERM PVIRG VIRG Gui
 %token ACCO_OUV ACC_FERM
 %token DEUX_POINTS CROCH_OUV CROCH_FERM
 %token DEFINE
@@ -55,6 +57,10 @@ programme:
         printf("Programme syntaxiquement correct.\n");
     }
     ;
+liste_idf:
+    IDF
+    | liste_idf VIRG IDF
+    ;
 
 declarations:
     | declarations declaration
@@ -65,13 +71,17 @@ declaration:
     {
         printf("Declaration a la ligne %d : variables de type %s.\n", @1.first_line, $4);
     }
-    | DEFINE CONST IDF DEUX_POINTS type AFFECT expression PVIRG
+    | DEFINE CONST IDF DEUX_POINTS type EGAL CHIFFRE PVIRG
     {
-        printf("Constante '%s' de type %s definie a la ligne %d.\n", $3, $5, @3.first_line);
+        printf("Constante '%s' de type %s definie Ã  la ligne %d avec valeur %d.\n", $3, $5, @3.first_line, $7);
     }
-    | VAR IDF CROCH_OUV CHIFFRE CROCH_FERM DEUX_POINTS type PVIRG
+    | DEFINE CONST IDF DEUX_POINTS type EGAL FLOAT PVIRG
     {
-        printf("Tableau '%s' de taille %d de type %s (ligne %d).\n", $2, $4, $7, @2.first_line);
+        printf("Constante '%s' de type %s definie a la ligne %d avec valeur %.2f.\n", $3, $5, @3.first_line, $7);
+    }
+    | LET IDF DEUX_POINTS CROCH_OUV type PVIRG CHIFFRE  CROCH_FERM PVIRG
+    {
+        printf("Tableau '%s' de taille %d de type %s (ligne %d).\n", $2, $7, $5, @2.first_line);
     }
     | LET liste_idf DEUX_POINTS CROCH_OUV type CROCH_FERM CHIFFRE PVIRG
 {
@@ -79,10 +89,7 @@ declaration:
 }
 ;
 
-liste_idf:
-    IDF
-    | liste_idf ',' IDF
-    ;
+
 
 type:
     INT_TYPE     { $$ = "int"; }
@@ -102,18 +109,14 @@ instruction:
     {
         printf("Instruction INPUT de '%s' (ligne %d).\n", $3, @1.first_line);
     }
-    | OUTPUT PAR_OUV liste_expressions PAR_FERM PVIRG
+    |OUTPUT PAR_OUV Gui CHAINE Gui PAR_FERM PVIRG
     {
-        printf("Instruction OUTPUT (ligne %d).\n", @1.first_line);
+        printf("Instruction OUTPUT (ligne %d) avec chaine : %s.\n", @1.first_line, $4);
     }
     | condition
     | boucle
     ;
 
-liste_expressions:
-    expression
-    | liste_expressions ',' expression
-    ;
 
 condition:
     IF PAR_OUV conditions PAR_FERM THEN ACCO_OUV instructions ACC_FERM ELSE ACCO_OUV instructions ACC_FERM
