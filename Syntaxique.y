@@ -35,8 +35,8 @@ int nb_ligne = 1;
 %token DO
 %token EXPONENT
 %token ACC_OUV
-%token STRING
 
+%token Gui
 
 %left OR
 %left AND
@@ -44,11 +44,12 @@ int nb_ligne = 1;
 %left SUP SUPEG INF INFEG EGALE DIFF
 %left PLUS MOINS
 %left MULT DIV
+%left MODULO
 
 %type <sval> type
 %type <sval> expression
 %type <sval> conditions
-
+%token <sval> CHAINE
 %%
 
 programme:
@@ -117,7 +118,7 @@ instruction:
     }
     | IDF CROCH_OUV expression CROCH_FERM AFFECT expression PVIRG
 {
-    printf("Affectation dans le tableau '%s' à l’indice (expression) à la ligne %d.\n", $1, @1.first_line);
+    printf("Affectation dans le tableau '%s' a la ligne %d.\n", $1, @1.first_line);
 }
 
     | condition
@@ -126,7 +127,7 @@ instruction:
 
 
 condition:
-    IF PAR_OUV conditions PAR_FERM THEN ACCO_OUV instructions ACC_FERM ELSE ACCO_OUV instructions ACC_FERM
+    IF PAR_OUV conditions PAR_FERM THEN ACCO_OUV instructions ACC_FERM ELSE ACCO_OUV instructions ACC_FERM PVIRG
     {
         printf("Condition IF-THEN-ELSE a la ligne %d.\n", @1.first_line);
     }
@@ -179,3 +180,4 @@ void yyerror(const char *msg) {
 int main() {
     return yyparse();
 }
+
