@@ -32,7 +32,7 @@ Chaine          [a-zA-Z_][a-zA-Z0-9_]*
 "EndPg"         { return END_PG; }
 "let"           { return LET; }
 "Int"           { return INT_TYPE; }
-"Float"         { return FLOAT_TYPE; }
+"Float"         { YY_USER_ACTION; return FLOAT_TYPE; }
 "if"            { return IF; }
 "then"          { return THEN; }
 "else"          { return ELSE; }
@@ -60,8 +60,9 @@ Chaine          [a-zA-Z_][a-zA-Z0-9_]*
 "*"             { return MULT; }
 "/"             { return DIV; }
 "%"             { return MODULO; }
-":"             { return DEUX_POINTS; }
+
 ":="            { return AFFECT; }
+":"             { return DEUX_POINTS; }
 "AND"           { return AND; }
 "OR"            { return OR; }
 "!"             { return NOT; }
@@ -76,23 +77,28 @@ Chaine          [a-zA-Z_][a-zA-Z0-9_]*
 "}"             { return ACC_FERM; }
 
 {Float} {
-    yylval.fval = atof(yytext);
+    YY_USER_ACTION; yylval.fval = atof(yytext);
     return FLOAT;
 }
 
 {chiffre} {
-    yylval.ival = atoi(yytext);
+    YY_USER_ACTION; yylval.ival = atoi(yytext);
     return CHIFFRE;
 }
 
 {idf} {
-    yylval.sval = strdup(yytext);
+    YY_USER_ACTION; yylval.sval = strdup(yytext);
     return IDF;
 }
-
+{Chaine}{
+    YY_USER_ACTION;
+    yylval.sval = strdup(yytext)
+    return CHAINE;
+}
 "<!-"([^-\n]|-([^>]|$))*"-!>"   { /* commentaire ligne ignoré */ }
 
 "{--"           { BEGIN(COMMENT_MULTILIGNE); }
+"<!--"([^-\n]|"-"[^>])*"-->"     { /* Commentaire sur une seule ligne : ignoré */ }
 
 <COMMENT_MULTILIGNE>"--}" { BEGIN(INITIAL); }
 <COMMENT_MULTILIGNE>\n    { line++; column = 1; }
