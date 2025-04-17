@@ -84,9 +84,11 @@ declaration:
         printf("Tableau '%s' de taille %d de type %s (ligne %d).\n", $2, $7, $5, @2.first_line);
     }
     | LET liste_idf DEUX_POINTS CROCH_OUV type PVIRG CHIFFRE CROCH_FERM PVIRG
-{
+    {
     printf("Tableaux de type %s, taille %d (ligne %d).\n", $5, $7, @1.first_line);
-}
+    }
+
+
 ;
 
 
@@ -113,6 +115,11 @@ instruction:
     {
         printf("Instruction OUTPUT (ligne %d) avec chaine : %s.\n", @1.first_line, $4);
     }
+    | IDF CROCH_OUV expression CROCH_FERM AFFECT expression PVIRG
+{
+    printf("Affectation dans le tableau '%s' à l’indice (expression) à la ligne %d.\n", $1, @1.first_line);
+}
+
     | condition
     | boucle
     ;
